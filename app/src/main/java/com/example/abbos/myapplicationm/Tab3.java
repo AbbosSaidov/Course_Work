@@ -74,7 +74,7 @@ public class Tab3 extends Fragment {
                     @Override
                     public void onClick(View v) {
                         /* DO SOMETHING UPON THE CLICK */
-                        Intent intent = new Intent(view.getContext(), MainActivity.class);
+                        Intent intent = new Intent(view.getContext(), Main2Activity.class);
                         startActivity(intent);
                         Objects.requireNonNull(getActivity()).finish();
                     }

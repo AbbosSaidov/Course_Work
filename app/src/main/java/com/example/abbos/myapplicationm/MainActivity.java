@@ -3,13 +3,8 @@ package com.example.abbos.myapplicationm;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import io.realm.Realm;
-import io.realm.RealmObject;
 import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,19 +14,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Realm.init(this);
-
-
-      //  DeleteAll();
-
        int s=Show();
         if(s==0){
             Kirit();
              Intent intent = new Intent(this, Welcome.class);
              startActivity(intent);
              finish();
+        }else {
+            Intent intent = new Intent(this, Main2Activity.class);
+            startActivity(intent);
+            finish();
         }
-
-
 
 
     }
