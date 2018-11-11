@@ -9,9 +9,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_blank_fragment3"
+        android:text="@string/click_ok_for_see_all_movies"
         android:layout_centerInParent="true"
         android:textSize="30sp"
+        android:textColor="@color/colorAccent"
         />
 
     <Button
@@ -21,6 +22,9 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="150dp"
-        android:text="@string/ok" />
+        android:text="@string/ok"
+        android:textColor="@color/White"
+        android:backgroundTint="@color/colorAccent"
+        />
 
 </RelativeLayout>

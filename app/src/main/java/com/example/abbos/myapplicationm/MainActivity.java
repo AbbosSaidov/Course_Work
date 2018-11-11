@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Realm.init(this);
-       int s=Show();
+       int s=Show();s=0;
         if(s==0){
             Kirit();
              Intent intent = new Intent(this, Welcome.class);
