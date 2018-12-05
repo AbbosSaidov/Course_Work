@@ -38,10 +38,11 @@
             android:layout_gravity="center"
             android:text="@string/highest_grossing_films"
             android:textAlignment="center"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/texts"
             android:textSize="30sp" />
 
         <TextView
+            android:textColor="@color/texts"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

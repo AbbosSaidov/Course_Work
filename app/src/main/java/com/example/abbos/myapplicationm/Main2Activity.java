@@ -134,7 +134,7 @@ public class Main2Activity extends AppCompatActivity
             String query = intent.getStringExtra(SearchManager.QUERY);
             //use the query to search your data somehow
             //Log.i("Search21","Search="+query);
-        /**/for(int i=0;i<NameOfMovie.length;i++){
+          for(int i=0;i<NameOfMovie.length;i++){
                 if(NameOfMovie[i].contains(query)){
                   //  toolbar.setTitle("All Movies");
                     CustomAdapter customAdapter=new CustomAdapter();

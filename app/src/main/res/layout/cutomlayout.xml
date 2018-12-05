@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@color/White"
     android:layout_height="match_parent">
 
     <ImageView
@@ -17,6 +18,7 @@
         app:srcCompat="@mipmap/ic_launcher_round" />
 
     <TextView
+        android:textColor="@color/texts"
         android:id="@+id/textView2"
         android:layout_width="305dp"
         android:layout_height="wrap_content"
@@ -27,6 +29,7 @@
         android:textSize="25sp" />
 
     <TextView
+        android:textColor="@color/texts"
         android:id="@+id/textView3"
         android:layout_width="238dp"
         android:layout_height="wrap_content"

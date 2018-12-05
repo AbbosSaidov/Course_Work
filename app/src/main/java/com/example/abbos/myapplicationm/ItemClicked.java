@@ -1,10 +1,20 @@
 package com.example.abbos.myapplicationm;
 
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.VideoView;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 public class ItemClicked extends AppCompatActivity {
 
@@ -42,12 +52,12 @@ public class ItemClicked extends AppCompatActivity {
             " The film made extensive use of new motion capture filming techniques, and was released for traditional viewing, 3D viewing (using the RealD" +
             " 3D, Dolby 3D, XpanD 3D, and IMAX 3D formats), and for \"4D\" experiences in select South Korean theaters. The stereoscopic filmmaking was touted as a breakthrough in cinematic technology";
 
+    int newString;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_clicked);
 
-        int newString;
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
@@ -68,5 +78,17 @@ public class ItemClicked extends AppCompatActivity {
         TextView textView2 =findViewById(R.id.textView2);
         textView.setText(NameOfMovie[newString]);
         textView2.setText(As);
+    }
+
+    public void OpenBrowser(View view){
+        String escapedQuery = null;
+        try {
+            escapedQuery = URLEncoder.encode(NameOfMovie[newString], "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        Uri uri = Uri.parse("http://www.google.com/#q=" + escapedQuery);
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW,uri);
+        startActivity(browserIntent);
     }
 }
