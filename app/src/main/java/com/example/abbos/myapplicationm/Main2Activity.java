@@ -4,7 +4,10 @@ import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -25,6 +28,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 
 
 public class Main2Activity extends AppCompatActivity
@@ -49,8 +59,12 @@ public class Main2Activity extends AppCompatActivity
             "8.9","8.9","8.9","8.9","8.8","7.8","7.8","8.0",
             "8.6","7.0","8.1","7.2","7.4","7.4","8.1"};
 
+    private Bitmap[] bitmap =new Bitmap[15];
+    private String[] Title =new String[15];
+    private String[] Description =new String[15];
     private Toolbar toolbar;
     private ListView listView;
+    private int CountAdded;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -60,9 +74,13 @@ public class Main2Activity extends AppCompatActivity
 
         listView =findViewById(R.id.listview);
 
+        CountAdded =0;
+
+        obnovit();
         final CustomAdapter customAdapter=new CustomAdapter();
 
-        customAdapter.fds=20;
+        customAdapter.fds=20+CountAdded;
+        customAdapter.added=CountAdded;
         listView.setAdapter(customAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -70,13 +88,10 @@ public class Main2Activity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if((Integer)listView.getTag()<-90){
                     position=position+10;
-                }else {
-                    if((Integer)listView.getTag()<-8){
-                    }else {
-                        position=(Integer)listView.getTag();
+                }else{
+                    if((Integer)listView.getTag()>=-8){position=(Integer)listView.getTag();
                     }
                 }
-
 
                 Intent myIntent = new Intent(Main2Activity.this, ItemClicked.class);
                 myIntent.putExtra("key", position); //Optional parameters
@@ -95,6 +110,47 @@ public class Main2Activity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    void obnovit(){
+        CountAdded=0;
+        for(int i=0;i<15;i++){
+            File file = new File(Environment.getExternalStorageDirectory() + "/DirName", "image"+i);
+            if(file.exists()){
+                bitmap[CountAdded] = BitmapFactory.decodeFile(file.getAbsolutePath());
+                try{
+                    FileOutputStream out = new FileOutputStream(file);
+
+                    bitmap[CountAdded].compress(Bitmap.CompressFormat.JPEG, 20, out);
+
+                    out.flush();
+                    out.close();
+
+                    StringBuilder text = new StringBuilder();
+                    File file2 = new File(Environment.getExternalStorageDirectory() + "/DirName","text"+i);
+
+                    BufferedReader br = new BufferedReader(new FileReader(file2));
+
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        text.append(line);
+                      //  text.append('\n');
+                    }
+
+                    br.close() ;
+                    for(int o=0;o<20;o++){
+                        if(text.toString().substring(o, o + 2).equals("%%")){
+                            Title[CountAdded]=text.toString().substring(0, o);
+                            Description[CountAdded]=text.toString().substring(o+2,text.toString().length());
+                            break;
+                        }
+                    }
+
+                }catch(IOException e) {
+                    e.printStackTrace();
+                }
+                CountAdded++;
+            }
+        }
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer =  findViewById(R.id.drawer_layout);
@@ -128,7 +184,6 @@ public class Main2Activity extends AppCompatActivity
 
         return true;
     }
-
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
@@ -174,8 +229,10 @@ public class Main2Activity extends AppCompatActivity
 
         if (id == R.id.nav_search) {
             toolbar.setTitle("All Movies");
+            obnovit();
             CustomAdapter customAdapter=new CustomAdapter();
-            customAdapter.fds=20;
+            customAdapter.fds=20+CountAdded;
+            customAdapter.added=CountAdded;
             listView.setAdapter(customAdapter);
         }else if(id == R.id.nav_top) {
             toolbar.setTitle("Top movies of All Time");
@@ -190,6 +247,9 @@ public class Main2Activity extends AppCompatActivity
         }else if(id == R.id.nav_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
+        }else if(id == R.id.add_movie) {
+            Intent intent = new Intent(this, Add.class);
+            startActivity(intent);
         }
         /*else if (id == R.id.nav_sign) { }*/
 
@@ -199,7 +259,7 @@ public class Main2Activity extends AppCompatActivity
     }
 
 class CustomAdapter extends BaseAdapter{
-    int fds=0;
+    int fds=0;int added=0;
     String asd ="1";
     int search =0;
     @Override
@@ -220,25 +280,36 @@ class CustomAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position,View convertView,ViewGroup parent){
-
         convertView =getLayoutInflater().inflate(R.layout.cutomlayout,null);
         ImageView imageView=convertView.findViewById(R.id.imageView3);
 
         TextView textView =convertView.findViewById(R.id.textView2);
         TextView textView2 =convertView.findViewById(R.id.textView3);
         listView.setTag(-9);
+        if(added>position){
+            try {
+                imageView.setImageBitmap(bitmap[position]);
+                textView.setText(Title[position]);
+                textView2.setText(String.format("IMBD: %s", "7"));
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }else{
+            position=position-added;
+            if(asd.equals("3")){//highest movies
+                position=position+10;
+                listView.setTag(-99);
+            }
+            if(asd.equals("4")){//highest movies
+                position=search;
+                listView.setTag(position);
+            }
 
-        if(asd.equals("3")){//highest movies
-            position=position+10;
-            listView.setTag(-99);
+            imageView.setImageResource(IMAGES[position]);
+            textView.setText(NameOfMovie[position]);
+            textView2.setText(String.format("IMBD: %s", RankingOfMovies[position]));
         }
-        if(asd.equals("4")){//highest movies
-            position=search;
-            listView.setTag(position);
-        }
-        imageView.setImageResource(IMAGES[position]);
-        textView.setText(NameOfMovie[position]);
-        textView2.setText(String.format("IMBD: %s", RankingOfMovies[position]));
+
 
         return convertView;
     }

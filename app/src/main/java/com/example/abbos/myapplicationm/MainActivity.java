@@ -34,11 +34,11 @@ public class MainActivity extends AppCompatActivity {
         File direct = new File(Environment.getExternalStorageDirectory() + "/DirName");
 
         if (!direct.exists()) {
-            File wallpaperDirectory = new File("/sdcard/DirName/");
+            File wallpaperDirectory = new File(Environment.getExternalStorageDirectory() + "/DirName");
             wallpaperDirectory.mkdirs();
         }
-
-        File file = new File(new File("/sdcard/DirName/"), "nmadr");
+/*
+        File file = new File(new File(Environment.getExternalStorageDirectory() + "/DirName"), "nmadr");
         if (file.exists()) {
             file.delete();
         }
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             out.close();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         Realm.init(this);
 
