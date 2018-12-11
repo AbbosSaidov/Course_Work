@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -83,5 +84,10 @@ public class Add extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Toast.makeText(this,"Your movie was added",Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, Main2Activity.class);
+        startActivity(intent);
+        finish();
+
     }
 }

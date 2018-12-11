@@ -86,16 +86,26 @@ public class Main2Activity extends AppCompatActivity
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if((Integer)listView.getTag()<-90){
-                    position=position+10;
+                int mk=CountAdded;
+                if((Integer)listView.getTag()<-10 && (Integer)listView.getTag()>-20 ){
+                    position=position+10+CountAdded;mk=0;
                 }else{
-                    if((Integer)listView.getTag()>=-8){position=(Integer)listView.getTag();
+                    if((Integer)listView.getTag()>=-8){position=(Integer)listView.getTag()+mk;mk=0;
+                    }else {
+                        if((Integer)listView.getTag()<-20 ){ mk=0;position=position+CountAdded;
+                        }
                     }
                 }
 
-                Intent myIntent = new Intent(Main2Activity.this, ItemClicked.class);
-                myIntent.putExtra("key", position); //Optional parameters
-                Main2Activity.this.startActivity(myIntent);
+              if(mk>position){
+                  Intent myIntent = new Intent(Main2Activity.this, ItemClicked.class);
+                  myIntent.putExtra("key", position); //Optional parameters
+                  Main2Activity.this.startActivity(myIntent);
+              }else{
+                  Intent myIntent = new Intent(Main2Activity.this, ItemClicked.class);
+                  myIntent.putExtra("key", position); //Optional parameters
+                  Main2Activity.this.startActivity(myIntent);
+              }
             }
         });
 
@@ -109,7 +119,6 @@ public class Main2Activity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-
     void obnovit(){
         CountAdded=0;
         for(int i=0;i<15;i++){
@@ -237,7 +246,7 @@ public class Main2Activity extends AppCompatActivity
         }else if(id == R.id.nav_top) {
             toolbar.setTitle("Top movies of All Time");
             CustomAdapter customAdapter=new CustomAdapter();
-            customAdapter.fds=10;
+            customAdapter.fds=10;customAdapter.asd="5";
             listView.setAdapter(customAdapter);
         }else if(id == R.id.nav_highest) {
             toolbar.setTitle("Highest grossing films ");
@@ -250,6 +259,7 @@ public class Main2Activity extends AppCompatActivity
         }else if(id == R.id.add_movie) {
             Intent intent = new Intent(this, Add.class);
             startActivity(intent);
+            finish();
         }
         /*else if (id == R.id.nav_sign) { }*/
 
@@ -298,19 +308,19 @@ class CustomAdapter extends BaseAdapter{
             position=position-added;
             if(asd.equals("3")){//highest movies
                 position=position+10;
-                listView.setTag(-99);
+                listView.setTag(-19);
             }
-            if(asd.equals("4")){//highest movies
+            if(asd.equals("4")){//searc movies
                 position=search;
                 listView.setTag(position);
             }
-
+            if(asd.equals("5")){//searc movies
+                listView.setTag(-29);
+            }
             imageView.setImageResource(IMAGES[position]);
             textView.setText(NameOfMovie[position]);
             textView2.setText(String.format("IMBD: %s", RankingOfMovies[position]));
         }
-
-
         return convertView;
     }
 }

@@ -1,18 +1,28 @@
 package com.example.abbos.myapplicationm;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -53,11 +63,15 @@ public class ItemClicked extends AppCompatActivity {
             " 3D, Dolby 3D, XpanD 3D, and IMAX 3D formats), and for \"4D\" experiences in select South Korean theaters. The stereoscopic filmmaking was touted as a breakthrough in cinematic technology";
 
     int newString;
+    private Bitmap[] bitmap =new Bitmap[15];
+    private String[] Title =new String[15];
+    private String[] Description =new String[15];
+    private int CountAdded;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_clicked);
-
+        obnovit();
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
@@ -68,16 +82,28 @@ public class ItemClicked extends AppCompatActivity {
         } else {
             newString= (int) savedInstanceState.getSerializable("key");
         }
-
-        //Log.i("Nmdr","nmadr0="+newString);
-
         ImageView imageView =findViewById(R.id.imageView);
-        imageView.setImageResource(IMAGES[newString]);
-
         TextView textView =findViewById(R.id.textView);
         TextView textView2 =findViewById(R.id.textView2);
-        textView.setText(NameOfMovie[newString]);
-        textView2.setText(As);
+
+        if(CountAdded>newString){
+            try {
+                imageView.setImageBitmap(bitmap[newString]);
+                textView.setText(Title[newString]);
+                textView2.setText(Description[newString]);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }else {
+            newString=newString-CountAdded;
+            imageView.setImageResource(IMAGES[newString]);
+            textView.setText(NameOfMovie[newString]);
+            textView2.setText(As);
+        }
+        //Log.i("Nmdr","nmadr0="+newString);
+
+
+
     }
 
     public void OpenBrowser(View view){
@@ -90,5 +116,47 @@ public class ItemClicked extends AppCompatActivity {
         Uri uri = Uri.parse("http://www.google.com/#q=" + escapedQuery);
         Intent browserIntent = new Intent(Intent.ACTION_VIEW,uri);
         startActivity(browserIntent);
+    }
+
+    void obnovit(){
+        CountAdded=0;
+        for(int i=0;i<15;i++){
+            File file = new File(Environment.getExternalStorageDirectory() + "/DirName", "image"+i);
+            if(file.exists()){
+                bitmap[CountAdded] = BitmapFactory.decodeFile(file.getAbsolutePath());
+                try{
+                    FileOutputStream out = new FileOutputStream(file);
+
+                    bitmap[CountAdded].compress(Bitmap.CompressFormat.JPEG, 20, out);
+
+                    out.flush();
+                    out.close();
+
+                    StringBuilder text = new StringBuilder();
+                    File file2 = new File(Environment.getExternalStorageDirectory() + "/DirName","text"+i);
+
+                    BufferedReader br = new BufferedReader(new FileReader(file2));
+
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        text.append(line);
+                        //  text.append('\n');
+                    }
+
+                    br.close() ;
+                    for(int o=0;o<20;o++){
+                        if(text.toString().substring(o, o + 2).equals("%%")){
+                            Title[CountAdded]=text.toString().substring(0, o);
+                            Description[CountAdded]=text.toString().substring(o+2,text.toString().length());
+                            break;
+                        }
+                    }
+
+                }catch(IOException e) {
+                    e.printStackTrace();
+                }
+                CountAdded++;
+            }
+        }
     }
 }
